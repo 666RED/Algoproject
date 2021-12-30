@@ -1,0 +1,310 @@
+START
+  DO
+    READ number
+    SET result = validNumber(number)
+    IF(result == 0)
+      DISPLAY "Letters or symbols are not allowed."
+    ELSE IF(result == 2)
+      DISPLAY "You shouldn't input the number starting from 0."
+    ELSE IF(result == 3)
+      DISPLAY "The number should be a positive value."
+    ELSE IF(result == 4)
+      DISPLAY "You shouldn't leave a space at the end of the number."
+    ELSE IF(result == 5)
+      DISPLAY "Invalid number, please input again."
+    ELSE   
+      SET numberOfEmployee = atoi(number)
+      IF(numberOfEmployee > 100)
+        DISPLAY "The maximum number is 100."
+      END IF
+    END IF
+  END WHILE(numberOfEmployee > 100 or result != 1 )
+
+  SET i = 0
+  FOR(i < numberOfEmployee)
+    DO
+      READ name[i]
+      CALL lower(name[i])
+      SET result = validName(name[i])
+      IF(result == 0)
+        DISPLAY "Invalid name, please input again."
+      ELSE IF(result == 2)
+        DISPLAY "The name shouldn't less than 3 characters, please input again."
+      ELSE IF(result == 3)
+        DISPLAY "The name shouldn't more than 50 characters, please input again."
+      ELSE IF(result == 4)
+        DISPLAY "You shouldn't leave a space at the end of the name."
+      ELSE IF(result == 5)
+        DISPLAY "You shouldn't space more than once between words of the name."
+      ELSE   
+        CALL capitalized(name[i])
+        SET t = 0
+        FOR(t < i)
+          SET repeatedName = strcmp(name[i], name[t])
+          IF(repeatedName == 0)
+            DISPLAY "The name is repeated."
+            SET result = -1
+            BREAK;
+          t++
+          END IF
+        END FOR
+      ENF IF
+    END WHILE(result != 1)
+
+    DO
+      READ id
+      SET result = vali_id(id)
+      IF(result == 0)
+        DISPLAY "Invalid ID number, only digit is allowed."
+      ELSE IF(result == 2)
+        DISPLAY "You shouldn't leave a space at the end of the ID."
+      ELSE IF(result == 3)
+        DISPLAY "Invalid ID number. (1000 < id < 9999)"
+      ELSE IF(result == 4)
+        DISPLAY "You shouldn't put a space between the digits."
+      ELSE
+        SET idNumber[i] = atoi(id)
+        IF(idNumber[i] <= 1000 or idNumber[i] >= 9999)
+          DISPLAY "Invalid ID number. (1000 < id < 9999)"
+        ELSE
+          SET t = 0
+          FOR(t < i)
+            IF(idNumber[i] == idNumber[t])
+              DISPLAY "The ID number is repeated."
+              SET result = -1
+              BREAK;
+            t++
+            END IF
+          END FOR
+        END IF
+      END IF
+    END WHILE(idNumber[i] <= 1000 or idNumber[i] >= 9999 or result != 1)
+
+    DO
+      READ age
+      SET result = valid_age(age)
+      IF(result == 0)
+        DISPLAY "Invalid age, please input again."
+      ELSE IF(result == 2)
+        DISPLAY "You shouldn't input the age starting from 0."
+      ELSE IF(result == 3)
+        DISPLAY "You shouldn't leave a space at the end of the age."
+      ELSE IF(result == 4)
+        DISPLAY "The age should be a positive value."
+      ELSE
+        SET realAge[i] = atoi(age)
+        IF(realAge[i] <= 18 or realAge[i] >= 99)
+          DISPLAY "The age should be in the range between 18 and 99."
+        ELSE
+          SET insurance_cost[i] = determineInsurance(pointer to realAge[i])
+        END IF
+      END IF
+    END WHILE(realAge[i] <= 18 or realAge[i] >= 99 or result != 1)
+
+    DO
+      READ grossSalary
+      SET result = validGrossSalary(grossSalary)
+      IF(result == 0)
+        DISPLAY "Invalid value."
+      ELSE IF(result == 2)
+        DISPLAY "The gross salary should be a positive value."
+      ELSE IF(result == 3)
+        DISPLAY "You shouldn't leave a space at the end of the salary."
+      ELSE IF(result == 4)
+        DISPLAY "The salary should have only two decimal places."
+      ELSE
+        SET salary[i] = atof(grossSalary)
+        IF(salary[i] <= 0.0 or salary[i] >= 9999.99)
+          DISPLAY "The salary should be in the range between RM 0.0 and RM 9999.99."
+        ELSE 
+          SET incometax_rate[i] = determineIncomeTaxRate(pointer to salary[i])
+        END IF
+      END IF
+    END WHILE(result != 1 or salary[i] <= 0.0 or salary[i] >= 9999.99)
+
+    SET incomeTax[i] = salary[i] * incometax_rate[i]
+    SET netSalary[i] = salary[i] - incomeTax[i] - insurance_cost[i]
+    i++
+  END FOR
+
+  SET averageInsurance = determineAverageValue(insurance_cost, pointer to numberOfEmployee)
+
+  SET averageGrossSalary = determineAverageValue(salary, pointer to numberOfEmployee)
+
+  SET averageIncomeTax = determineAverageValue(incomeTax, pointer to numberOfEmployee)
+
+  SET averageIncomeTaxRate = determineAverageValue(incometax_rate, pointer to numberOfEmployee)
+
+  SET averageNetSalary = determineAverageValue(netSalary, pointer to numberOfEmployee)
+
+  DISPLAY the payroll table
+END
+                    
+Function validNumber(number)
+  IF(First char is 0)
+    RETURN 2
+  ELSE IF(First char is negative sign)
+    RETURN 3
+  ELSE IF(Last char is space)
+    RETURN 4
+  END IF
+
+  SET i = 0
+  FOR(i < string length of number)
+    IF(number[i] is space)
+      RETURN 5
+    ELSE IF(number[i] is not a digit)
+      RETURN 0
+    ELSE IF(It is final loop)
+      RETURN 1
+    END IF
+    i++
+  END FOR
+END Function
+
+Function validName(name[i])  
+  IF(String length of name < 3)
+    RETURN 2
+  ELSE IF(String length of name > 50)
+    RETURN 3
+  ELSE IF(Last char is space)
+    RETURN 4
+  END IF
+
+  SET i = 0
+  FOR(i < string length of name)
+    IF(The two consecutive char are space)
+      RETURN 5
+    ELSE IF(name[i] is not a lower case character and name[i] is not a space)
+      RETURN 0
+    ELSE IF(It is final loop)
+      RETURN 1
+    END IF
+    i++
+  END FOR
+END Function
+
+Function valid_id(id)
+  IF(Last char is space)
+    RETURN 2
+  ELSE IF(First char is 0)
+    RETURN 3
+  END IF
+
+  SET i = 0
+  FOR(i < string length of id)
+    IF(id[i] is space)
+      RETURN 4
+    ELSE IF(id[i] is not a digit)
+      RETURN 0
+    ELSE IF(It is final loop)
+      RETURN 1
+    END IF
+    i++
+  END FOR
+END Function
+
+Function valid_age(age)
+  IF(First char is 0)
+    RETURN 2
+  ELSE IF(Last char is space)
+    RETURN 3    
+  ELSE IF(First char is negative sign)
+    RETURN 4
+  END IF
+
+  SET i = 0
+  FOR(i < string length of age)
+    IF(age[i] is not a digit)
+      RETURN 0 
+    ELSE IF(It is final loop)
+      RETURN 1
+    END IF
+    i++
+  END FOR
+END Function
+
+Function validGrossSalary(grossSalary)
+  SET numberOfPeriod = 0
+  IF(First char is period)
+    RETURN 0
+  ELSE IF(First char is 0)
+    If(Second char is not a period)
+      RETURN 0
+    END IF
+  ELSE IF(First char is negative sign)
+    RETURN 2
+  ELSE IF(Last char is space)
+    RETURN 3
+  END IF
+
+  SET i = 0
+  FOR(i < string length of grossSalary)
+    IF(salary[i] is period)
+      numberOfPeriod++
+      IF(The third char after the period is a digit)
+        RETURN 4
+      END IF
+    IF(numberOfPeriod > 1)
+      RETURN 0
+    IF(salary[i] is not a digit and salary[i] is not a period)
+      RETURN 0
+    ELSE IF(It is final loop)
+      RETURN 1
+    END IF
+    i++
+  END FOR
+END Function
+
+Function determineInsurance(pointer to realAge[i])
+  IF(value of realAge[i] <= 35)
+    SET result = 110
+  ELSE IF(36 <= value of realAge[i] <= 65)
+    SET result = 160
+  ELSE IF(value of realAge[i] > 65)
+    SET result = 250
+  END IF
+  RETURN result
+END Function
+
+Function determineIncomeTaxRate(pointer to salary[i])
+  IF(value of salary[i] < 1000)
+    SET result = 0.0
+  ELSE IF(1000 <= value of salary[i] <= 2999.99)
+    SET result = 0.025
+  ELSE IF(value of salary[i] >= 3000)
+    SET result = 0.05
+  END IF
+  RETURN result
+END Function
+
+Function determineAverageValue(value, pointer to numberOfEmployee)
+  SET total = 0.0
+  SET i = 0
+  FOR(i < value of numberOfEmployee)
+    total += value[i]
+    i++
+  END FOR
+
+  SET average = total / value of numberOfEmployee
+  RETURN average
+END Function
+
+Function lower(name[i])
+  SET i = 0
+  FOR(i < string length of name)
+    SET name[i] = tolower(name[i])
+    i++
+  END FOR
+END Function
+
+Function capitalized(name[i])
+  SET name[0] = toupper(name[0])
+  SET i = 0
+  FOR(i < string length of name)
+    IF(name[i] is a space)
+      SET name[i+1] = toupper(name[i+1])
+    END IF
+    i++
+  END FOR
+END Function
