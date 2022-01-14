@@ -122,7 +122,7 @@ int main(){
       }else if (result == 4){
         printf("The age should be a positive value.\n");
       }else{
-        realAge[i] = atoi(age);//convert the character array to a float variable
+        realAge[i] = atoi(age);//convert the character array to a int variable
         if(realAge[i] <= 18 || realAge[i] >= 99){//determine if the age is in the specified range
           printf("The age should be in the range between 18 and 99.\n");
         }else{
