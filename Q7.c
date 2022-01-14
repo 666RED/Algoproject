@@ -56,7 +56,7 @@ int main(){
     do{
       printf("\nEmployee %d's name: ", i + 1);
       scanf("\n%[^\n]", name[i]);//store the user input into a 2-dimensional character array
-      lower(name[i]);     
+      lower(name[i]);
       result = validName(name[i]);//determine the validity of the user input
       if(result == 0){
         printf("Invalid name, please input again.\n");
@@ -193,7 +193,7 @@ int validNumber(char* number){
     return 3;
   }else if(number[strlen(number) - 1] == 32){//Last char is space
     return 4;
-  }
+  } 
   for(int i = 0; i < strlen(number); i++){//Check for every character of the user input
     if(number[i] == 32){//if there is space in the user input
       return 5;
@@ -273,7 +273,7 @@ int validGrossSalary(char* salary){
     return 3;
   }
   for(int i = 0; i < strlen(salary); i++){
-    if(salary[i] == 46){//If there is a peiod in the salary
+    if(salary[i] == 46){//If there is a period in the salary
       numberOfPeriod++;
       if(salary[i + 3] <= 57 && salary[i + 3] >= 48){//having three decimal places
         return 4;
